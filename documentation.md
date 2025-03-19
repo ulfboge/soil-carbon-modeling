@@ -1,104 +1,108 @@
-# **Soil Carbon Modeling Data Preparation Using Google Earth Engine**  
+# Soil Carbon Modeling Documentation
 
-## **1. Introduction**  
-This repository documents the process of retrieving and processing geospatial datasets for **soil carbon modeling** in a carbon project. The workflow utilizes **Google Earth Engine (GEE)** to extract climate, soil, vegetation, and land cover data for a defined **Area of Interest (AOI)**.  
+## Overview
+This repository contains tools and documentation for preparing geospatial datasets for soil carbon modeling using Google Earth Engine (GEE). The workflow processes climate, soil, vegetation, and land cover data for defined Areas of Interest (AOI).
 
-## **2. Data Sources & Processing Steps**  
+## 📚 Documentation Structure
 
-| **Dataset**         | **Source**                     | **Bands Used**         | **Processing Steps**                                | **Final Units**   |
-|--------------------|--------------------------------|-----------------------|--------------------------------------------------|------------------|
-| **Climate**        | GRIDMET (GEE)                  | `tmmx`, `tmmn`, `pr`, `etr` | Convert temperature to °C and precipitation to mm  | °C, mm           |
-| **SOC Stocks**     | SoilGrids 250m                 | `ocs_0-30cm_mean`     | Direct selection, clipped to AOI                 | t C ha⁻¹         |
-| **Clay Content**   | OpenLandMap                    | `b0`, `b10`, `b30`    | Averaged (0-30cm), clipped to AOI                | %                |
-| **Land Cover**     | ESA WorldCover                 | `Map`                 | Reclassified into 3 categories (Forestry, Grassland, Agriculture) | Categorical      |
-| **Vegetation Cover** | MODIS v061 (`MOD13A1`)       | `NDVI`                | Median value, scale correction (0.0001)          | NDVI (0-1)       |
+- [Carbon Project Workflow](docs/carbon_project_workflow.md) - Detailed step-by-step guide for data processing
+- [README.md](README.md) - Project overview and setup instructions
 
-## **3. GEE Processing Steps**  
+## 🛠️ Available Scripts and Notebooks
 
-### **3.1 Define AOI**  
-The AOI is loaded from an Earth Engine Asset.  
-```javascript
-var aoi = ee.FeatureCollection('projects/ee-komba/assets/bbox_wirong').geometry();
-```
+### Google Earth Engine Scripts
+Located in `scripts/gee/`:
+- `Land_Soil_NDVI_Export.js`: Export NDVI data for land and soil analysis
+- `TerraClimate_Monthly_Averages_CSV.js`: Process TerraClimate data and export as CSV
+- `TerraClimate_Monthly_Averages_Resampled.js`: Resample TerraClimate data for specific regions
 
-### **3.2 Retrieve Climate Data**  
-- **Source:** GRIDMET  
-- **Processing:** Convert temperature from **Kelvin to Celsius**  
-```javascript
-var climate = ee.ImageCollection("IDAHO_EPSCOR/GRIDMET")
-  .filterBounds(aoi)
-  .filterDate("1980-01-01", ee.Date(Date.now()))
-  .select(["tmmx", "tmmn", "pr", "etr"])
-  .mean()
-  .clip(aoi);
-```
+### Jupyter Notebooks
+Located in `notebooks/`:
+- `Land_Soil_NDVI_Export.ipynb`: Interactive NDVI data processing and visualization
+- `Land_Soil_NDVI_Export_Alternative.ipynb`: Alternative approach for NDVI processing
+- `TerraClimate_Monthly_Averages_CSV.ipynb`: TerraClimate data processing and CSV export
+- `TerraClimate_Monthly_Averages_Resampled.ipynb`: TerraClimate data resampling and analysis
 
-### **3.3 Retrieve Soil Data**  
-- **SOC Stocks (0-30cm depth, t C ha⁻¹)**  
-  - **Dataset:** SoilGrids (`ocs_mean`)  
-  - **Processing:** Direct selection, no unit conversion needed  
-```javascript
-var soc = ee.Image("projects/soilgrids-isric/ocs_mean")
-  .select("ocs_0-30cm_mean")
-  .rename("SOC_tCha")
-  .clip(aoi)
-  .updateMask(soc.mask());
-```
+## 📊 Data Sources
 
-- **Clay Content (0-30cm, % mass fraction)**  
-```javascript
-var clay = ee.Image("OpenLandMap/SOL/SOL_TEXTURE-CLASS_USDA-TT_M/v02")
-  .select(["b0", "b10", "b30"])
-  .reduce(ee.Reducer.mean())
-  .rename("Clay_Percent")
-  .clip(aoi)
-  .updateMask(clay.mask());
-```
+### Climate Data
+- **GRIDMET**: Basic climate variables (temperature, precipitation, etc.)
+- **TerraClimate**: Detailed monthly climate data
 
-### **3.4 Land Cover Classification**  
-- **Dataset:** ESA WorldCover  
-- **Reclassified for RothC Model**  
-```javascript
-var landcover = ee.ImageCollection("ESA/WorldCover/v100")
-  .filterBounds(aoi)
-  .sort("system:time_start", false)
-  .first()
-  .clip(aoi);
+### Soil Data
+- **SoilGrids 250m**: Soil organic carbon stocks
+- **OpenLandMap**: Clay content and soil texture
 
-var landcover_reclassified = landcover.remap(
-  [10, 20, 30, 40], // Original classes
-  [1, 2, 2, 3],     // Reclassified: 1=Forestry, 2=Grassland, 3=Agriculture
-  0                 // Default (everything else excluded)
-).rename("Land_Cover_Class");
-```
+### Land Cover
+- **ESA WorldCover**: Land cover classification
 
-### **3.5 Vegetation Cover (NDVI)**  
-- **Dataset:** MODIS v061 (`MOD13A1`)  
-- **Processing:** Median value, scale correction applied (0.0001)  
-```javascript
-var ndvi = ee.ImageCollection("MODIS/061/MOD13A1")
-  .filterBounds(aoi)
-  .filterDate("2000-01-01", ee.Date(Date.now()))
-  .select("NDVI")
-  .median()
-  .multiply(0.0001) // Convert to proper scale
-  .rename("NDVI")
-  .clip(aoi);
-```
+### Vegetation
+- **MODIS v061**: NDVI data for vegetation cover
 
-## **4. Data Visualization & Export**  
+## 🔧 Processing Steps
 
-### **4.1 Value Distribution Histograms**  
-```javascript
-print(ui.Chart.image.histogram({image: soc, region: aoi, scale: 1000}).setOptions({title: "SOC Distribution"}));
-print(ui.Chart.image.histogram({image: clay, region: aoi, scale: 1000}).setOptions({title: "Clay Content"}));
-print(ui.Chart.image.histogram({image: ndvi, region: aoi, scale: 1000}).setOptions({title: "NDVI Distribution"}));
-```
+1. **Area of Interest (AOI) Definition**
+   - Load AOI from Earth Engine Asset
+   - Define spatial boundaries
 
-### **4.2 Export Data to Google Drive**  
-```javascript
-Export.image.toDrive({ image: soc, description: "SOC_Stocks", scale: 1000, region: aoi, fileFormat: "GeoTIFF" });
-Export.image.toDrive({ image: clay, description: "Clay_Content", scale: 1000, region: aoi, fileFormat: "GeoTIFF" });
-Export.image.toDrive({ image: landcover_reclassified, description: "Land_Cover_Reclassified", scale: 1000, region: aoi, fileFormat: "GeoTIFF" });
-Export.image.toDrive({ image: ndvi, description: "Monthly_NDVI", scale: 1000, region: aoi, fileFormat: "GeoTIFF" });
-``` 
+2. **Climate Data Processing**
+   - Retrieve GRIDMET data
+   - Process TerraClimate monthly averages
+   - Convert units and apply corrections
+
+3. **Soil Data Processing**
+   - Extract SOC stocks
+   - Calculate clay content
+   - Apply spatial masks
+
+4. **Land Cover Classification**
+   - Load ESA WorldCover data
+   - Reclassify for RothC model
+   - Generate categorical maps
+
+5. **Vegetation Analysis**
+   - Process NDVI data
+   - Apply scale corrections
+   - Generate temporal composites
+
+## 📈 Data Visualization
+
+- Distribution histograms for all variables
+- Land cover classification maps
+- Interactive visualizations in notebooks
+- Time series analysis for climate data
+
+## 📤 Export Options
+
+### GeoTIFF Exports
+- SOC stocks
+- Clay content
+- Land cover classification
+- NDVI data
+
+### CSV Exports
+- Monthly climate variables
+- Statistical summaries
+- Point data
+
+## 🔍 Quality Assurance
+
+- Data validation steps
+- Error handling procedures
+- Progress tracking
+- Export verification
+
+## 📝 Usage Instructions
+
+1. Review the [Carbon Project Workflow](docs/carbon_project_workflow.md) for detailed processing steps
+2. Choose the appropriate script or notebook for your analysis
+3. Follow the setup instructions in the documentation
+4. Run the analysis and export results
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
