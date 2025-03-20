@@ -38,6 +38,24 @@ This repository contains scripts and notebooks for processing geospatial data re
 │── 📜 .gitignore       # Ignore large files & logs
 ```
 
+## 📁 OneDrive Data Structure
+
+Large data files and generated content are stored in a parallel structure on OneDrive. This includes:
+
+```
+📁 Soil Carbon Modeling (OneDrive)
+│── 📁 data_exports/     # Exported GeoTIFFs and processed data
+│── 📁 charts/           # Generated visualizations and histograms
+│── 📁 csv/             # Exported CSV files and data tables
+```
+
+To access these files:
+1. Request access to the OneDrive folder
+2. Download the required data for your analysis
+3. Place the files in the corresponding local directories
+
+Note: The OneDrive structure mirrors the local repository structure for easy synchronization.
+
 ## 📋 Available Scripts and Notebooks
 
 ### Setup Notebook

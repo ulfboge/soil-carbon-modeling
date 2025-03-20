@@ -1,11 +1,14 @@
-# Data exports
+# Data directories (stored in OneDrive)
 data_exports/
+charts/
+csv/
+
+# Geospatial data files
 *.tif
 *.tiff
 *.csv
 
-# Charts and figures
-charts/
+# Generated visualizations
 *.png
 *.jpg
 *.jpeg
