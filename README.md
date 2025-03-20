@@ -46,7 +46,7 @@ Large data files and generated content are stored in a parallel structure on One
 📁 Soil Carbon Modeling (OneDrive)
 │── 📁 data_exports/     # Exported GeoTIFFs and processed data
 │── 📁 charts/           # Generated visualizations and histograms
-│── �� csv/             # Folder for exported CSV files and data tables
+│── 📁 csv/             # Folder for exported CSV files and data tables
 ```
 
 To access these files:
