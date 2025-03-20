@@ -40,16 +40,50 @@ This repository contains scripts and notebooks for processing geospatial data re
 
 ## 📋 Available Scripts and Notebooks
 
-### Google Earth Engine Scripts
-- `Land_Soil_NDVI_Export.js`: Export NDVI data for land and soil analysis
-- `TerraClimate_Monthly_Averages_CSV.js`: Process TerraClimate data and export as CSV
-- `TerraClimate_Monthly_Averages_Resampled.js`: Resample TerraClimate data for specific regions
+### Setup Notebook
+- `00_Setup_and_Mount.ipynb`: Initial setup notebook that:
+  - Installs required packages
+  - Mounts Google Drive
+  - Sets up Earth Engine
+  - Creates necessary directories
+  - Provides common functions and variables
 
-### Jupyter Notebooks
-- `Land_Soil_NDVI_Export.ipynb`: Interactive NDVI data processing and visualization
-- `Land_Soil_NDVI_Export_Alternative.ipynb`: Alternative approach for NDVI processing
-- `TerraClimate_Monthly_Averages_CSV.ipynb`: TerraClimate data processing and CSV export
-- `TerraClimate_Monthly_Averages_Resampled.ipynb`: TerraClimate data resampling and analysis
+### Google Earth Engine Scripts and Notebooks
+Each GEE script has a corresponding Jupyter notebook version for interactive analysis:
+
+1. **Land and Soil NDVI Analysis**
+   - GEE Script: `Land_Soil_NDVI_Export.js`
+   - Notebook: `Land_Soil_NDVI_Export.ipynb`
+   - Alternative Notebook: `Land_Soil_NDVI_Export_Alternative.ipynb`
+   - Functionality: Processes and exports multiple geospatial datasets including:
+     - Soil Organic Carbon (SOC) stocks (0-30cm)
+     - Clay content from OpenLandMap
+     - Land cover classification from ESA WorldCover
+     - NDVI from MODIS
+     - Includes visualization and histogram analysis
+
+2. **TerraClimate Data Processing**
+   - GEE Script: `TerraClimate_Monthly_Averages_CSV.js`
+   - Notebook: `TerraClimate_Monthly_Averages_CSV.ipynb`
+   - Functionality: Processes TerraClimate data (1980-2024) to generate:
+     - Monthly mean temperature
+     - Monthly mean precipitation
+     - Monthly mean potential evapotranspiration (PET)
+     - Exports results as CSV with AOI-wide statistics
+
+3. **TerraClimate Data Resampling**
+   - GEE Script: `TerraClimate_Monthly_Averages_Resampled.js`
+   - Notebook: `TerraClimate_Monthly_Averages_Resampled.ipynb`
+   - Functionality: Similar to CSV version but:
+     - Resamples data to 1000m resolution
+     - Exports as GeoTIFF with monthly bands
+     - Includes visualization parameters for temperature, precipitation, and PET
+
+The Jupyter notebooks provide an interactive environment for:
+- Modifying parameters and rerunning analysis
+- Visualizing results in real-time
+- Exploring data distributions
+- Customizing export options
 
 ## 🔧 Setup Instructions
 
@@ -74,13 +108,21 @@ This repository contains scripts and notebooks for processing geospatial data re
    jupyter notebook
    ```
 
+5. Run the setup notebook first:
+   - Open `notebooks/00_Setup_and_Mount.ipynb`
+   - Follow the instructions to mount your Google Drive
+   - This notebook sets up the environment for all other notebooks
+
 ## 📊 Data Sources
 
-- **Climate Data**: GRIDMET (GEE)
-- **Soil Data**: SoilGrids 250m
-- **Land Cover**: ESA WorldCover
-- **Vegetation**: MODIS (v061)
-- **Additional Climate**: TerraClimate
+- **Climate Data**: 
+  - GRIDMET (GEE)
+  - TerraClimate (1980-2024)
+- **Soil Data**: 
+  - SoilGrids 250m (SOC stocks)
+  - OpenLandMap (Clay content)
+- **Land Cover**: ESA WorldCover v100
+- **Vegetation**: MODIS v061 (NDVI)
 
 ## 📝 Usage
 
