@@ -59,14 +59,6 @@ Note: The OneDrive structure mirrors the local repository structure for easy syn
 
 ## 📋 Available Scripts and Notebooks
 
-### Setup Notebook
-- `00_Setup_and_Mount.ipynb`: Initial setup notebook that:
-  - Installs required packages
-  - Mounts Google Drive
-  - Sets up Earth Engine
-  - Creates necessary directories
-  - Provides common functions and variables
-
 ### Google Earth Engine Scripts and Notebooks
 Each GEE script has a corresponding Jupyter notebook version for interactive analysis:
 
@@ -127,10 +119,10 @@ The Jupyter notebooks provide an interactive environment for:
    jupyter notebook
    ```
 
-5. Run the setup notebook first:
-   - Open `notebooks/00_Setup_and_Mount.ipynb`
-   - Follow the instructions to mount your Google Drive
-   - This notebook sets up the environment for all other notebooks
+5. Download required data:
+   - Visit the [OneDrive folder](https://kayaglobal.sharepoint.com/:f:/s/ClimateOffice/Eohsdwk2Ii1NgBReznqv3IgB-AsNm2qAmfmYkJfKRHoydw?e=SW7hyV)
+   - Download the necessary data files
+   - Place them in the corresponding directories in your local repository
 
 ## 📊 Data Sources
 
