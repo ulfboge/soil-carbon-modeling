@@ -46,13 +46,14 @@ Large data files and generated content are stored in a parallel structure on One
 📁 Soil Carbon Modeling (OneDrive)
 │── 📁 data_exports/     # Exported GeoTIFFs and processed data
 │── 📁 charts/           # Generated visualizations and histograms
-│── 📁 csv/             # Exported CSV files and data tables
+│── �� csv/             # Folder for exported CSV files and data tables
 ```
 
 To access these files:
-1. Request access to the OneDrive folder
-2. Download the required data for your analysis
-3. Place the files in the corresponding local directories
+1. Visit the [OneDrive folder](https://kayaglobal.sharepoint.com/:f:/s/ClimateOffice/Eohsdwk2Ii1NgBReznqv3IgB-AsNm2qAmfmYkJfKRHoydw?e=SW7hyV)
+2. Request access if you don't have it already
+3. Download the required data for your analysis
+4. Place the files in the corresponding local directories in your repository
 
 Note: The OneDrive structure mirrors the local repository structure for easy synchronization.
 
